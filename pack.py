@@ -24,4 +24,6 @@ def pack(config):
         else:
           shutil.copy2(f, p)
 
-    subprocess.run(['mksquashfs', os.path.join(tmpdir, config['name']), config['name'] + '.tcz', '-noappend']) 
+    # Make everything owned by root/root
+    # TODO Support custom ownership 
+    subprocess.run(['mksquashfs', os.path.join(tmpdir, config['name']), config['name'] + '.tcz', '-noappend', '-force-uid', '0', '-force-gid', '0']) 

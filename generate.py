@@ -1,6 +1,8 @@
 import os
 import re
 
+from stat import S_IMODE
+
 def replace(text, config):
   tl = re.split(r':([\w\.]+):', text)
 
@@ -22,8 +24,11 @@ def replace(text, config):
 def generate(file_path, destination, config):
 
   file_name = os.path.basename(file_path)
+  dest_path = os.path.join(destination, file_name)
 
   with open(file_path + '.template', 'r') as template:
-    with open(os.path.join(destination, file_name), 'w') as f:
+    with open(dest_path, 'w') as f:
       t = template.read()
       f.write(replace(t, config))
+  mode = os.stat(file_path + '.template').st_mode
+  os.chmod(dest_path, S_IMODE(mode))
