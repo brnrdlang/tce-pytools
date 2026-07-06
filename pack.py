@@ -17,10 +17,13 @@ def pack(config):
 
       for f in desc['content']:
         if not os.path.isfile(f):
-          try:
-            generate(f, p, config)
-          except FileNotFoundError:
-            raise FileNotFoundError('Could not find %s or a corresponding template file' % f)
+          if os.path.isdir(f):
+            shutil.copytree(f, p, dirs_exist_ok=True)
+          else:
+            try:
+              generate(f, p, config)
+            except FileNotFoundError:
+              raise FileNotFoundError('Could not find %s or a corresponding template file' % f)
         else:
           shutil.copy2(f, p)
 
